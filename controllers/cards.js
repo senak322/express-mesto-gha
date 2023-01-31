@@ -5,7 +5,7 @@ const getCards = (req, res) => {
     .then((cards) => {
       res.status(200).send({ data: cards });
     })
-    .catch((err) => res.status(400).send(err));
+    .catch((err) => res.status(500).send(err));
 };
 
 const createCard = (req, res) => {

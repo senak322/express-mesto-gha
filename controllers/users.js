@@ -5,7 +5,7 @@ const getUsers = (req, res) => {
     .then((users) => {
       res.status(200).send({ data: users });
     })
-    .catch((err) => res.status(400).send(err));
+    .catch((err) => res.status(500).send(err));
 };
 
 const getUsersById = (req, res) => {
@@ -24,7 +24,7 @@ const createUser = (req, res) => {
 
   User.create({ name, about, avatar })
     .then((user) => res.status(201).send({ data: user }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch((err) => res.status(500).send(err));
 };
 
 const updateUser = (req, res) => {
