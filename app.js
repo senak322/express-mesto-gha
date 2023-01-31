@@ -6,20 +6,16 @@ mongoose.set('strictQuery', false);
 
 const bodyParser = require('body-parser');
 
-// const path = require('path');
-
 const userRouter = require('./routes/users');
+const cardRouter = require('./routes/cards');
 
 const app = express();
 
 const { PORT = 3000 } = process.env;
 
+mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-mongoose.connect('mongodb://127.0.0.1:27017/mestodb', {
-
-});
 app.use((req, res, next) => {
   req.user = {
     _id: '63d957ebf3bc5525f6ca12cc',
@@ -28,11 +24,9 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/', userRouter);
-
-// app.use(express.static(path.join(__dirname, 'build')));
+app.use(userRouter);
+app.use(cardRouter);
 
 app.listen(PORT, () => {
-  console.log('hi');
   console.log(`App listening on port ${PORT}`);
 });

@@ -11,15 +11,15 @@ const getCards = (req, res) => {
 const createCard = (req, res) => {
   const { name, link } = req.body;
 
-  Card.create({ name, link })
+  Card.create({ name, link, owner: req.user._id })
     .then((card) => res.status(201).send({ data: card }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch((err) => res.status(500).send(err));
 };
 
 const deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
-    .then((user) => { res.status(200).send({ data: user }); })
-    .catch(() => res.status(404).send({ message: 'Произошла ошибка' }));
+    .then((card) => { res.status(200).send({ data: card }); })
+    .catch((err) => res.status(500).send(err));
 };
 
 module.exports = { getCards, createCard, deleteCard };
