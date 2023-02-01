@@ -36,11 +36,11 @@ const getUsersById = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(ERROR_CODE).send({ mesasge: 'Пользователь по указанному _id не найден' });
+        res.status(ERROR_CODE).send({ message: 'Пользователь по указанному _id не найден' });
         return;
       }
       if (err.name === 'NotFoundError') {
-        res.status(err.statusCode).send({ mesasge: 'Пользователь по указанному _id не найден' });
+        res.status(err.statusCode).send({ message: 'Пользователь по указанному _id не найден' });
         return;
       }
       res.status(500).send(err);
@@ -59,15 +59,15 @@ const createUser = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ mesasge: 'Переданы некорректные данные при создании пользователя' });
+        res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя' });
         return;
       }
       if (err.name === 'CastError') {
-        res.status(err.statusCode).send({ mesasge: 'Переданы некорректные данные при создании пользователя' });
+        res.status(err.statusCode).send({ message: 'Переданы некорректные данные при создании пользователя' });
         return;
       }
       if (err.name === 'CreateError') {
-        res.status(err.statusCode).send({ mesasge: 'Переданы некорректные данные при создании пользователя' });
+        res.status(err.statusCode).send({ message: 'Переданы некорректные данные при создании пользователя' });
         return;
       }
       res.status(500).send(err);
@@ -88,7 +88,7 @@ const updateUser = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ mesasge: 'Переданы некорректные данные при создании пользователя' });
+        res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя' });
         return;
       }
       if (err.name === 'CastError') {
@@ -117,7 +117,7 @@ const updateAvatar = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ mesasge: 'Переданы некорректные данные при обновлении аватара' });
+        res.status(400).send({ message: 'Переданы некорректные данные при обновлении аватара' });
         return;
       }
       if (err.name === 'CastError') {
