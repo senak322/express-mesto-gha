@@ -8,6 +8,7 @@ const bodyParser = require('body-parser');
 
 const userRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
+const returnPromiseError = require('./routes/badReqest');
 
 const app = express();
 
@@ -26,5 +27,6 @@ app.use((req, res, next) => {
 
 app.use(userRouter);
 app.use(cardRouter);
+app.use('*', returnPromiseError);
 
 app.listen(PORT, () => {});

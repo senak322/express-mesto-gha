@@ -84,7 +84,7 @@ const updateUser = (req, res) => {
       if (!user) {
         throw new CreateError('Переданы некорректные данные при создании пользователя');
       }
-      res.status(201).send({ data: user });
+      res.status(200).send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -113,7 +113,7 @@ const updateAvatar = (req, res) => {
       if (!user) {
         throw new CreateError('Переданы некорректные данные при обновлении аватара');
       }
-      res.status(201).send({ data: user });
+      res.status(200).send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {

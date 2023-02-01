@@ -62,7 +62,7 @@ const deleteCard = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'NotFoundError') {
-        res.status(err.statusCode).send({ mesasge: 'Карточка с указанным _id не найдена' });
+        res.status(ERROR_CODE).send({ mesasge: 'Карточка с указанным _id не найдена' });
         return;
       }
       res.status(500).send(err);
