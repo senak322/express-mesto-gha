@@ -63,11 +63,11 @@ const createUser = (req, res) => {
         return;
       }
       if (err.name === 'CastError') {
-        res.status(err.statusCode).send(err.message);
+        res.status(err.statusCode).send({ mesasge: 'Переданы некорректные данные при создании пользователя' });
         return;
       }
       if (err.name === 'CreateError') {
-        res.status(err.statusCode).send(err.message);
+        res.status(err.statusCode).send({ mesasge: 'Переданы некорректные данные при создании пользователя' });
         return;
       }
       res.status(500).send(err);
