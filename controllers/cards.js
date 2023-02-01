@@ -61,8 +61,13 @@ const deleteCard = (req, res) => {
       res.status(200).send({ data: card });
     })
     .catch((err) => {
+      console.log(err.name);
+      if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Карточка с указанным _id не найдена' });
+        return;
+      }
       if (err.name === 'NotFoundError') {
-        res.status(ERROR_CODE).send({ message: 'Карточка с указанным _id не найдена' });
+        res.status(404).send({ message: 'Карточка с указанным _id не найдена' });
         return;
       }
       res.status(500).send(err);
