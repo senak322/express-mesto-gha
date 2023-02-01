@@ -6,4 +6,4 @@ class CreateError extends Error {
   }
 }
 
-module.exports = CreateError;
+module.exports = { CreateError };

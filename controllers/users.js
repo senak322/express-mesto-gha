@@ -1,8 +1,9 @@
 const User = require('../models/user');
 
-const { NotFoundError, CreateError } = require('../errors/NotFoundError');
+const { NotFoundError } = require('../errors/NotFoundError');
+const { CreateError } = require('../errors/CreateError');
 
-const NOTFOUND_CODE = 404;
+const ERROR_CODE = 400;
 
 const getUsers = (req, res) => {
   User.find({})
@@ -15,6 +16,11 @@ const getUsers = (req, res) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(err.statusCode).send(err.message);
+        return;
+      }
+      if (err.name === 'NotFoundError') {
+        res.status(err.statusCode).send(err.message);
+        return;
       }
       res.status(500).send(err);
     });
@@ -29,9 +35,13 @@ const getUsersById = (req, res) => {
       return res.status(200).send({ data: user });
     })
     .catch((err) => {
-      console.log(err);
       if (err.name === 'CastError') {
-        res.status(NOTFOUND_CODE).send(err.message);
+        res.status(ERROR_CODE).send({ mesasge: 'Пользователь по указанному _id не найден' });
+        return;
+      }
+      if (err.name === 'NotFoundError') {
+        res.status(err.statusCode).send({ mesasge: 'Пользователь по указанному _id не найден' });
+        return;
       }
       res.status(500).send(err);
     });
@@ -48,6 +58,14 @@ const createUser = (req, res) => {
       res.status(201).send({ data: user });
     })
     .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ mesasge: 'Переданы некорректные данные при создании пользователя' });
+        return;
+      }
+      if (err.name === 'CastError') {
+        res.status(err.statusCode).send(err.message);
+        return;
+      }
       if (err.name === 'CreateError') {
         res.status(err.statusCode).send(err.message);
         return;
@@ -62,8 +80,27 @@ const updateUser = (req, res) => {
     runValidators: true, // данные будут валидированы перед изменением
     upsert: true, // если пользователь не найден, он будет создан
   })
-    .then((user) => res.status(201).send({ data: user }))
-    .catch((err) => res.status(500).send(err));
+    .then((user) => {
+      if (!user) {
+        throw new CreateError('Переданы некорректные данные при создании пользователя');
+      }
+      res.status(201).send({ data: user });
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ mesasge: 'Переданы некорректные данные при создании пользователя' });
+        return;
+      }
+      if (err.name === 'CastError') {
+        res.status(err.statusCode).send(err.message);
+        return;
+      }
+      if (err.name === 'CreateError') {
+        res.status(err.statusCode).send(err.message);
+        return;
+      }
+      res.status(500).send(err);
+    });
 };
 
 const updateAvatar = (req, res) => {
@@ -72,8 +109,27 @@ const updateAvatar = (req, res) => {
     runValidators: true, // данные будут валидированы перед изменением
     upsert: true, // если пользователь не найден, он будет создан
   })
-    .then((user) => res.status(201).send({ data: user }))
-    .catch((err) => res.status(500).send(err));
+    .then((user) => {
+      if (!user) {
+        throw new CreateError('Переданы некорректные данные при обновлении аватара');
+      }
+      res.status(201).send({ data: user });
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ mesasge: 'Переданы некорректные данные при обновлении аватара' });
+        return;
+      }
+      if (err.name === 'CastError') {
+        res.status(err.statusCode).send(err.message);
+        return;
+      }
+      if (err.name === 'CreateError') {
+        res.status(err.statusCode).send(err.message);
+        return;
+      }
+      res.status(500).send(err);
+    });
 };
 
 module.exports = {
