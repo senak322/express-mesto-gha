@@ -1,30 +1,59 @@
 const User = require('../models/user');
 
+const { NotFoundError, CreateError } = require('../errors/NotFoundError');
+
+const NOTFOUND_CODE = 404;
+
 const getUsers = (req, res) => {
   User.find({})
     .then((users) => {
+      if (!users) {
+        throw new NotFoundError('Пользователи не найдены');
+      }
       res.status(200).send({ data: users });
     })
-    .catch((err) => res.status(500).send(err));
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(err.statusCode).send(err.message);
+      }
+      res.status(500).send(err);
+    });
 };
 
 const getUsersById = (req, res) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
-        return res.status(404).send({ message: 'Нет пользователя с таким id' });
+        throw new NotFoundError('Пользователь по указанному _id не найден');
       }
       return res.status(200).send({ data: user });
     })
-    .catch((err) => res.status(500).send(err));
+    .catch((err) => {
+      console.log(err);
+      if (err.name === 'CastError') {
+        res.status(NOTFOUND_CODE).send(err.message);
+      }
+      res.status(500).send(err);
+    });
 };
 
 const createUser = (req, res) => {
   const { name, about, avatar } = req.body;
 
   User.create({ name, about, avatar })
-    .then((user) => res.status(201).send({ data: user }))
-    .catch((err) => res.status(500).send(err));
+    .then((user) => {
+      if (!user) {
+        throw new CreateError('Переданы некорректные данные при создании пользователя');
+      }
+      res.status(201).send({ data: user });
+    })
+    .catch((err) => {
+      if (err.name === 'CreateError') {
+        res.status(err.statusCode).send(err.message);
+        return;
+      }
+      res.status(500).send(err);
+    });
 };
 
 const updateUser = (req, res) => {
