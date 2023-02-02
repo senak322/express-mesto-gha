@@ -6,7 +6,7 @@ mongoose.set('strictQuery', false);
 
 const bodyParser = require('body-parser');
 
-const rateLimit = require ('express-rate-limit');
+const rateLimit = require('express-rate-limit');
 
 const helmet = require('helmet');
 
