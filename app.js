@@ -19,6 +19,8 @@ const limiter = rateLimit({
 
 const userRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
+const { login, createUser } = require('./controllers/users');
+const { auth } = require('./middlewares/auth');
 const returnPromiseError = require('./routes/badReqest');
 
 const app = express();
@@ -28,18 +30,14 @@ const { PORT = 3000 } = process.env;
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use((req, res, next) => {
-  req.user = {
-    _id: '63d957ebf3bc5525f6ca12cc',
-  };
-
-  next();
-});
 
 app.use(limiter);
 app.use(helmet());
 app.disable('x-powered-by');
 
+app.post('/signin', login);
+app.post('/signup', createUser);
+app.use(auth);
 app.use(userRouter);
 app.use(cardRouter);
 app.use('*', returnPromiseError);

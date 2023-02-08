@@ -28,7 +28,7 @@ const getCards = (req, res) => {
 const createCard = (req, res) => {
   const { name, link } = req.body;
 
-  Card.create({ name, link, owner: req.user._id })
+  Card.create({ name, link, owner: req.user })
     .then((card) => {
       if (!card) {
         throw new CreateError('Переданы некорректные данные при создании карточки');
@@ -53,23 +53,36 @@ const createCard = (req, res) => {
 };
 
 const deleteCard = (req, res) => {
-  Card.findByIdAndRemove(req.params.cardId)
+  Card.findById(req.params.cardId)
     .then((card) => {
       if (!card) {
         throw new NotFoundError('Карточка с указанным _id не найдена');
       }
-      res.status(200).send({ data: card });
+      if (card.owner.toString() !== req.user._id) {
+        throw new Error('Невозможно удалять чужие карточки');
+      } else {
+        Card.findByIdAndRemove(req.params.cardId)
+          .then((cardEl) => {
+            if (!cardEl) {
+              throw new NotFoundError('Карточка с указанным _id не найдена');
+            }
+            res.status(200).send({ data: cardEl });
+          })
+          .catch((err) => {
+            if (err.name === 'CastError') {
+              res.status(400).send({ message: 'Карточка с указанным _id не найдена' });
+              return;
+            }
+            if (err.name === 'NotFoundError') {
+              res.status(404).send({ message: 'Карточка с указанным _id не найдена' });
+              return;
+            }
+            res.status(500).send(err);
+          });
+      }
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Карточка с указанным _id не найдена' });
-        return;
-      }
-      if (err.name === 'NotFoundError') {
-        res.status(404).send({ message: 'Карточка с указанным _id не найдена' });
-        return;
-      }
-      res.status(500).send(err);
+      res.status(401).send({ message: err.message });
     });
 };
 
