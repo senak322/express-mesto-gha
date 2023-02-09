@@ -24,7 +24,6 @@ const returnPromiseError = require('./routes/badReqest');
 const { auth } = require('./middlewares/auth');
 const { error } = require('./middlewares/error');
 
-
 const app = express();
 
 const { PORT = 3000 } = process.env;
@@ -47,8 +46,8 @@ app.post('/signup', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
     password: Joi.string().required(),
-    name: Joi.string(),
-    about: Joi.string(),
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().min(2).max(30),
     avatar: Joi.string(),
   }),
 }), createUser);
