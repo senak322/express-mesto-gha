@@ -1,6 +1,7 @@
+const jwt = require('jsonwebtoken');
+
 const { NotAuthorized } = require('../errors/NotAuthorized');
 
-const jwt = require('jsonwebtoken');
 const { randomString } = require('../controllers/users');
 
 const auth = (req, res, next) => {
@@ -16,7 +17,7 @@ const auth = (req, res, next) => {
     return next(new NotAuthorized('Необходима авторизация'));
   }
   req.user = payload;
-  next();
+  return next();
 };
 
 module.exports = { auth };
