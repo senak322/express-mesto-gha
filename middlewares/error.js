@@ -23,10 +23,10 @@ const error = (err, req, res, next) => {
     res.status(err.statusCode).send({ message: err.message });
     return;
   }
-  if (err.name === 'NotAuthorized') {
-    res.status(err.statusCode).send({ message: err.message });
-    return;
-  }
+  // if (err.name === 'NotAuthorized') {
+  //   res.status(err.statusCode).send({ message: err.message });
+  //   return;
+  // }
   res.status(500).send({ message: 'На свервере что-то пошло не так' });
   next();
 };

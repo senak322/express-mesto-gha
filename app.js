@@ -23,7 +23,7 @@ const { login, createUser } = require('./controllers/users');
 const returnPromiseError = require('./routes/badReqest');
 const { auth } = require('./middlewares/auth');
 const { error } = require('./middlewares/error');
-const { errors } = require('celebrate');
+const { errors, celebrate, Joi } = require('celebrate');
 
 const app = express();
 
@@ -37,8 +37,21 @@ app.use(limiter);
 app.use(helmet());
 app.disable('x-powered-by');
 
-app.post('/signin', login);
-app.post('/signup', createUser);
+app.post('/signin', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required(),
+  }),
+}), login);
+app.post('/signup', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required(),
+    name: Joi.string(),
+    about: Joi.string(),
+    avatar: Joi.string(),
+  }),
+}), createUser);
 app.use(auth);
 app.use(userRouter);
 app.use(cardRouter);
