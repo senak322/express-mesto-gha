@@ -20,8 +20,10 @@ const limiter = rateLimit({
 const userRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
-const { auth } = require('./middlewares/auth');
 const returnPromiseError = require('./routes/badReqest');
+const { auth } = require('./middlewares/auth');
+const { error } = require('./middlewares/error');
+const { errors } = require('celebrate');
 
 const app = express();
 
@@ -41,5 +43,8 @@ app.use(auth);
 app.use(userRouter);
 app.use(cardRouter);
 app.use('*', returnPromiseError);
+
+app.use(errors());
+app.use(error);
 
 app.listen(PORT, () => {});
