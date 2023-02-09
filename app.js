@@ -24,6 +24,8 @@ const returnPromiseError = require('./routes/badReqest');
 const { auth } = require('./middlewares/auth');
 const { error } = require('./middlewares/error');
 
+const urlRegExp = /(http|https):\/\/(www\.)?([-A-Za-z0-9]{1,256}(\b.)?[A-Za-z0-9]{1,})([-A-Za-z0-9/]*)/;
+
 const app = express();
 
 const { PORT = 3000 } = process.env;
@@ -48,7 +50,7 @@ app.post('/signup', celebrate({
     password: Joi.string().required(),
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    avatar: Joi.string(),
+    avatar: Joi.string().pattern(urlRegExp),
   }),
 }), createUser);
 app.use(auth);

@@ -6,11 +6,16 @@ const {
 
 const urlRegExp = /(http|https):\/\/(www\.)?([-A-Za-z0-9]{1,256}(\b.)?[A-Za-z0-9]{1,})([-A-Za-z0-9/]*)/;
 
-router.get('/me', getMe);
-
 router.get('/users', getUsers);
 
-router.get('/users/:userId', getUsersById);
+router.get('/users/me', getMe);
+
+router.get('/users/:userId', celebrate({
+  // валидируем параметры
+  params: Joi.object().keys({
+    userId: Joi.string().hex().length(24),
+  }),
+}), getUsersById);
 
 router.patch('/users/me', celebrate({
   body: Joi.object().keys({

@@ -5,6 +5,7 @@ const User = require('../models/user');
 
 const { NotFoundError } = require('../errors/NotFoundError');
 const { CreateError } = require('../errors/CreateError');
+const { NotAuthorized } = require('../errors/NotAuthorized');
 
 const randomString = crypto.randomBytes(32).toString('hex');
 
@@ -50,6 +51,9 @@ const createUser = (req, res, next) => {
           res.status(201).send({
             _id: user._id,
             email: user.email,
+            name: user.name,
+            about: user.about,
+            avatar: user.avatar,
           });
         })
         .catch((err) => {
@@ -97,11 +101,11 @@ const login = (req, res, next) => {
   User.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        Promise.reject(new NotFoundError('Неправильные почта или пароль'));
+        throw new NotAuthorized('Неправильные почта или пароль');
       }
       return bcrypt.compare(password, user.password).then((matched) => {
         if (!matched) {
-          return Promise.reject(new NotFoundError('Неправильные почта или пароль'));
+          throw new NotAuthorized('Неправильные почта или пароль');
         }
         const token = jwt.sign({ _id: user._id }, randomString, { expiresIn: '7d' });
         return res.send({ jwt: token });
