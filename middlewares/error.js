@@ -1,5 +1,4 @@
 const error = (err, req, res, next) => {
-  console.log(err);
   if (err.name === 'CastError') {
     res.status(400).send({ message: err.message });
     return;
@@ -25,6 +24,10 @@ const error = (err, req, res, next) => {
     return;
   }
   if (err.name === 'NotAuthorized') {
+    res.status(err.statusCode).send({ message: err.message });
+    return;
+  }
+  if (err.name === 'BadReqest') {
     res.status(err.statusCode).send({ message: err.message });
     return;
   }
