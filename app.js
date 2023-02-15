@@ -23,6 +23,8 @@ const { login, createUser } = require('./controllers/users');
 const returnPromiseError = require('./routes/badReqest');
 const { auth } = require('./middlewares/auth');
 const { error } = require('./middlewares/error');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
+const { cors } = require('./middlewares/cors');
 
 const urlRegExp = /(http|https):\/\/(www\.)?([-A-Za-z0-9]{1,256}(\b.)?[A-Za-z0-9]{1,})([-A-Za-z0-9/]*)/;
 
@@ -37,6 +39,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(limiter);
 app.use(helmet());
 app.disable('x-powered-by');
+
+app.use(requestLogger);
+
+app.use(cors);
 
 app.post('/signin', celebrate({
   body: Joi.object().keys({
@@ -58,6 +64,7 @@ app.use(userRouter);
 app.use(cardRouter);
 app.use('*', returnPromiseError);
 
+app.use(errorLogger); // подключаем логгер ошибок
 app.use(errors());
 app.use(error);
 
