@@ -1,13 +1,15 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const crypto = require('crypto');
+// const crypto = require('crypto');
 const User = require('../models/user');
 
 const { NotFoundError } = require('../errors/NotFoundError');
 const { CreateError } = require('../errors/CreateError');
 const { NotAuthorized } = require('../errors/NotAuthorized');
 
-const randomString = crypto.randomBytes(32).toString('hex');
+const { NODE_ENV, JWT_SECRET } = process.env;
+
+// const randomString = crypto.randomBytes(32).toString('hex');
 
 const getUsers = (req, res, next) => {
   User.find({})
@@ -107,7 +109,7 @@ const login = (req, res, next) => {
         if (!matched) {
           throw new NotAuthorized('Неправильные почта или пароль');
         }
-        const token = jwt.sign({ _id: user._id }, randomString, { expiresIn: '7d' });
+        const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
         return res.send({ jwt: token });
       });
     })
@@ -130,5 +132,5 @@ const getMe = (req, res, next) => {
 };
 
 module.exports = {
-  getUsers, getUsersById, createUser, updateUser, updateAvatar, login, randomString, getMe,
+  getUsers, getUsersById, createUser, updateUser, updateAvatar, login, getMe,
 };
