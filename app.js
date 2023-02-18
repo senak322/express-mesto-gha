@@ -37,11 +37,10 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use(requestLogger);
 app.use(limiter);
 app.use(helmet());
 app.disable('x-powered-by');
-
-app.use(requestLogger);
 
 app.use(cors);
 

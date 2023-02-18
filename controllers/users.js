@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
 const { NotFoundError } = require('../errors/NotFoundError');
-const { CreateError } = require('../errors/CreateError');
+// const { CreateError } = require('../errors/CreateError');
 const { NotAuthorized } = require('../errors/NotAuthorized');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
@@ -14,9 +14,6 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 const getUsers = (req, res, next) => {
   User.find({})
     .then((users) => {
-      if (!users) {
-        throw new NotFoundError('Пользователи не найдены');
-      }
       res.status(200).send({ data: users });
     })
     .catch((err) => {
@@ -47,9 +44,6 @@ const createUser = (req, res, next) => {
         name, about, avatar, email, password: hash,
       })
         .then((user) => {
-          if (!user) {
-            throw new CreateError('Переданы некорректные данные при создании пользователя');
-          }
           res.status(201).send({
             _id: user._id,
             email: user.email,
@@ -72,7 +66,7 @@ const updateUser = (req, res, next) => {
   })
     .then((user) => {
       if (!user) {
-        throw new CreateError('Переданы некорректные данные при создании пользователя');
+        throw new NotFoundError('Пользователь не найден');
       }
       res.status(200).send({ data: user });
     })
@@ -89,7 +83,7 @@ const updateAvatar = (req, res, next) => {
   })
     .then((user) => {
       if (!user) {
-        throw new CreateError('Переданы некорректные данные при обновлении аватара');
+        throw new NotFoundError('Пользователь не найден');
       }
       res.status(200).send({ data: user });
     })

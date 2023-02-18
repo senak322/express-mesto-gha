@@ -1,17 +1,14 @@
 const Card = require('../models/card');
 const { NotFoundError } = require('../errors/NotFoundError');
-const { CreateError } = require('../errors/CreateError');
+// const { CreateError } = require('../errors/CreateError');
 // const { BadReqest } = require('../errors/BadReqest');
 const { Forbidden } = require('../errors/Forbidden');
 
 // const ERROR_CODE = 400;
 
 const getCards = (req, res, next) => {
-  Card.find({})
+  Card.find({}).sort({ createdAt: -1 })
     .then((cards) => {
-      if (!cards) {
-        throw new NotFoundError('Данные не найдены');
-      }
       res.status(200).send({ data: cards });
     })
     .catch((err) => {
@@ -24,9 +21,6 @@ const createCard = (req, res, next) => {
 
   Card.create({ name, link, owner: req.user })
     .then((card) => {
-      if (!card) {
-        throw new CreateError('Переданы некорректные данные при создании карточки');
-      }
       res.status(201).send({ data: card });
     })
     .catch((err) => {

@@ -1,7 +1,5 @@
-const { BadReqest } = require('../errors/BadReqest');
+const { NotFoundError } = require('../errors/NotFoundError');
 
-const returnPromiseError = (req, res, next) => Promise.reject(new BadReqest('Указанный адрес не найден')).catch((err) => {
-  next(err);
-});
+const returnPromiseError = (req, res, next) => next(new NotFoundError('Указанный адрес не найден'));
 
 module.exports = returnPromiseError;

@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "npx eslint",
+    "lint": "npx eslint .",
     "start": "node app.js",
     "dev": "nodemon app.js"
   },
@@ -13,7 +13,7 @@
     "type": "git",
     "url": "git+https://github.com/senak322/express-mesto-gha.git"
   },
-  "author": "",
+  "author": "Aleksandr Viznyi",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/senak322/express-mesto-gha/issues"
