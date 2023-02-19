@@ -11,8 +11,9 @@ const error = (err, req, res, next) => {
     res.status(400).send({ message: 'Переданы некорректные данные' });
     return;
   }
+  const { statusCode = 500 } = err;
   const errMessage = err.statusCode === 500 ? 'На свервере что-то пошло не так' : err.message;
-  res.status(err.statusCode).send({ message: errMessage });
+  res.status(statusCode).send({ message: errMessage });
   next();
 };
 
